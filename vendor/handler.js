@@ -1,9 +1,14 @@
-const event = require('./eventpool');
+const Chance = require("chance");
 
-module.exports = {
-  handlePickup: () => {
-    event.on('pickup', (payload) => {
-      console.log(`Vendor: Package for order ${payload.orderId} has been picked up.`);
-    });
-  },
-};
+const chance = new Chance();
+
+function onNewPackage(payload) {
+  return (payload = {
+    store: chance.word({ length: 5 }),
+    orderID: chance.guid(),
+    customer: chance.name(),
+    address: chance.address(),
+  });
+}
+
+module.exports = onNewPackage;

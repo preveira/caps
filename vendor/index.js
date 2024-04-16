@@ -1,20 +1,15 @@
-const event = require('./eventpool.js');
+const newPackage = require("./handler.js");
+const events = require("../eventPool.js");
 
-module.exports = (storeName) => {
-  return {
-    pickupPackage: () => {
-      const payload = {
-        store: storeName,
-        orderId: generateUniqueId(),
-        customer: generateRandomName(),
-        address: generateRandomAddress()
-      };
-      event.emit('pickup', payload);
-    },
-    listenForDelivery: () => {
-      event.on('delivered', (payload) => {
-        console.log(`VENDOR: Thank you for delivering ${payload.orderId}`);
-      });
-    }
-  };
-};
+function makePayload() {
+  let payload = newPackage();
+  events.emit("pickup", payload);
+}
+
+function delivered() {
+  events.on("delivered", () => {
+    console.log("VENDOR", "Thank you for the delivery!");
+  });
+}
+
+module.exports = { makePayload, delivered };

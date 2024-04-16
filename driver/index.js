@@ -1,33 +1,11 @@
-const event = require('./eventpool.js');
+const events = require("../eventPool.js");
+const handler = require("./handler.js");
 
-module.exports = (storeName) => {
-  return {
-    pickupPackage: () => {
-      const payload = {
-        store: storeName,
-        orderId: generateUniqueId(),
-        customer: generateRandomName(),
-        address: generateRandomAddress()
-      };
-      event.emit('pickup', payload);
-    },
-    listenForDelivery: () => {
-      event.on('delivered', (payload) => {
-        console.log(`VENDOR: Thank you for delivering ${payload.orderId}`);
-      });
-    }
-  };
-};
-
-// Utility functions for generating random data
-function generateUniqueId() {
-  // Implement this function to generate a unique ID
+class Driver {
+  listen() {
+    events.on("pickup", (payload) => handler.transit(events, payload));
+    events.on("inTransit", (payload) => handler.delivered(events, payload));
+  }
 }
 
-function generateRandomName() {
-  // Implement this function to generate a random name
-}
-
-function generateRandomAddress() {
-  // Implement this function to generate a random address
-}
+module.exports = new Driver();

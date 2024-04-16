@@ -1,43 +1,73 @@
-const EventEmitter = require('events');
-require('./eventpool.js');
 
-const emitter = new EventEmitter();
+const event = require('./eventPool.js');
 
-const state = {
-  pickup: false,
-  inTransit: false,
-  delivered: false,
+function defineEventMessage(payload, type) {
+  console.log({
+    event: type,
+    time: new Date().toISOString(),
+    payload: payload,
+  });
+}
+
+event.on('pickup', (payload) => {
+  defineEventMessage(payload, 'pickup');
+});
+const events = require("./eventPool");
+const driverListening = require("./driver");
+const vendor = require("./vendor");
+
+let state = {
+  event: "no events yet",
+  time: "no time yet",
+  payload: {
+    store: "store name",
+    orderID: "order number",
+    customer: "customer name",
+    address: "customer address",
+  },
 };
 
-// const order = {
-//   pickupStatus: () => {
-//     let value = true;
-//     emitter.emit('pickup', { pickup: value })
-//   },
-//   inTransitStatus: () => {
-//     let value = true;
-//     emitter.emit('inTransit', { inTransit: value })
-//   },
-//   deliveredStatus: () => {
-//     let value = true;
-//     emitter.emit('delivered', { delivered: value })
-//   }
-// }
-
-emitter.on('new order', (payload) => {
-  state.pickup = payload.pickup;
-  console.log('order has been picked up', state);
+events.on("pickup", (payload) => {
+  state = {
+    event: "pickup",
+    time: new Date(),
+    payload: payload,
+  };
+  console.log("EVENT:", state);
 });
 
-emitter.on('order in transit', (payload) => {
-  state.inTransit = payload.inTransit;
-  console.log('order is in transit', state);
+events.on("inTransit", (payload) => {
+  state = {
+    event: "inTransit",
+    time: new Date(),
+    payload: payload,
+  };
+  console.log("EVENT:", state);
 });
 
-emitter.on('order delivered', (payload) => {
-  state.delivered = payload.delivered;
-  console.log('order delivered', state);
-})
+events.on("delivered", (payload) => {
+  state = {
+    event: "delivered",
+    time: new Date(),
+    payload: payload,
+  };
+  console.log("EVENT:", state);
+});
+
+driverListening.listen();
+vendor.delivered();
+
+vendor.makePayload();
+event.on('inTransit', (payload) => {
+  defineEventMessage(payload, 'in-transit');
+});
+
+event.on('delivered', (payload) => {
+  defineEventMessage(payload, 'delivered');
+});
 
 require('./driver');
 require('./vendor');
+
+
+event.emit('create', { store: '1-206-flowers' });

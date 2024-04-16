@@ -1,16 +1,11 @@
-const event = require('./eventpool.js');
+function transit(events, payload) {
+  console.log("DRIVER", "picked up", payload.orderID);
+  events.emit("inTransit", payload);
+}
 
-module.exports = {
-  handlePickup: () => {
-    event.on('pickup', (payload) => {
-      console.log(`Driver: Package ${payload.orderId} picked up and in transit.`);
-      event.emit('in-transit', payload);
-    });
-  },
+function delivered(events, payload) {
+  console.log("DRIVER", "delivered", payload.orderID);
+  events.emit("delivered", payload);
+}
 
-  handleDelivery: () => {
-    event.on('delivered', (payload) => {
-      console.log(`Driver: Package ${payload.orderId} delivered.`);
-    });
-  },
-};
+module.exports = { transit, delivered };
