@@ -1,15 +1,19 @@
-const newPackage = require("./handler.js");
-const events = require("../eventPool.js");
+'use strict';
 
-function makePayload() {
-  let payload = newPackage();
-  events.emit("pickup", payload);
-}
+const io = require('socket.io-client');
+const generatePackage = require('./handler.js');
 
-function delivered() {
-  events.on("delivered", () => {
-    console.log("VENDOR", "Thank you for the delivery!");
-  });
-}
+let socket = io.connect('http://localhost:3000/caps');
 
-module.exports = { makePayload, delivered };
+socket.emit('join', {
+  clientId: 'vendor',
+  capsId: 'caps',
+});
+
+socket.on('delivered', (payload) => {
+  console.log('VENDOR: thank you for delivering package', payload.package.orderId);
+});
+
+setInterval(() => {
+  socket.emit('pickup', {package: generatePackage('1-206-flowers'), capsId: 'caps'} );
+}, 2000);
