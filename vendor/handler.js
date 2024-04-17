@@ -1,14 +1,19 @@
-const Chance = require("chance");
 
-const chance = new Chance();
+const Chance = require('chance');
+const chance = new Chance(Math.random);
 
-function onNewPackage(payload) {
-  return (payload = {
-    store: chance.word({ length: 5 }),
-    orderID: chance.guid(),
-    customer: chance.name(),
+function generatePackage(storeName) {
+  
+  const packagePayload = {
+    store: storeName,
+    orderId: chance.natural(),
+    customer: `${chance.first()} ${chance.last()}`,
     address: chance.address(),
-  });
+  };
+
+  console.log(`VENDOR: creating package ${packagePayload.orderId}`);
+
+  return packagePayload;
 }
 
-module.exports = onNewPackage;
+module.exports = generatePackage;
