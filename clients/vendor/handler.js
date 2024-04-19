@@ -6,12 +6,12 @@ function generatePackage(storeName) {
   
   const packagePayload = {
     store: storeName,
-    orderId: chance.natural(),
+    orderId: chance.guid(),
     customer: `${chance.first()} ${chance.last()}`,
     address: chance.address(),
   };
 
-  console.log(`VENDOR: creating package ${packagePayload.orderId}`);
+  console.log('VENDOR: creating package', packagePayload.orderId);
 
   return packagePayload;
 }
