@@ -11,7 +11,7 @@ function generatePackage(storeName) {
     address: chance.address(),
   };
 
-  console.log(`VENDOR: creating package ${packagePayload.orderId}`);
+  console.log('VENDOR: creating package', packagePayload.orderId);
 
   return packagePayload;
 }
