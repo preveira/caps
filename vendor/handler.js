@@ -6,7 +6,7 @@ function generatePackage(storeName) {
   
   const packagePayload = {
     store: storeName,
-    orderId: chance.natural(),
+    orderId: chance.guid(),
     customer: `${chance.first()} ${chance.last()}`,
     address: chance.address(),
   };
